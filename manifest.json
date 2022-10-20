@@ -1,0 +1,22 @@
+{
+  "name": "Purge Assistant",
+  "description": "Purge assistant is an extension that is able to delete entire sections, along with their content, in a single click.",
+  "version": "1.0",
+  "manifest_version": 3,
+  "permissions": [
+    "storage",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "https://cms.seattleu.edu/terminalfour/*"
+  ],
+  "content_scripts": [{
+    "matches": ["https://cms.seattleu.edu/terminalfour/*"],
+    "js": ["dom.js"]
+  }],
+  "action": {
+    "default_title": "Purge Assistant",
+    "default_icon": "./assets/icon.png",
+    "default_popup": "./assets/popup.html"
+  }
+}

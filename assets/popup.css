@@ -1,0 +1,57 @@
+@font-face {
+  font-family: sanFran;
+  src: url(./SF-Pro-Display-Regular.otf);
+}
+
+body {
+  text-align: center;
+  font-family: sanFran !important;
+}
+
+p {
+  color: gray;
+  opacity: .6;
+}
+
+input {
+  height: 40px;
+  border-radius: 10px;
+  border: 2px solid #E8E8E8;
+  padding-left: 10px;
+  outline: none;
+}
+
+#purgeBtn {
+  margin-top: 20px;
+  width: 100px;
+  height: 40px;
+  border: 0px;
+  border-radius: 10px;
+  background-color: lightcoral;
+}
+
+#overlay {
+  position: fixed;
+  display: none;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.5);
+  z-index: 2;
+  cursor: pointer;
+}
+
+img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  -ms-transform: translate(-50%,-50%);
+}
+
+#credit {
+  font-size: 10px;
+}
