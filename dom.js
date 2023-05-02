@@ -81,16 +81,17 @@ async function getSectionInfo(id) {
                 "showContentInfo": true,
                 "showWidget": true,
                 "openNodes": [id],
-                "showFullTree": false,
+                "showFullTree": true,
                 "restrictedToPermitedSections": false,
-                "expandCollapseAllChildren": false
+                "expandCollapseAllChildren": true
             }
         })
       })).json())[0]
 }
 
 async function purgeSectionIDs (array) {
-    return await fetch("https://cms.seattleu.edu/terminalfour/rs/hierarchy/purge", {
+    array = array.map(String)
+    const rq = async (arr) => await fetch("https://cms.seattleu.edu/terminalfour/rs/hierarchy/purge", {
         "headers": {
             "authorization": `Bearer ${JSON.parse(window.sessionStorage.__oauth2).accessToken}`,
             ...constantHeaders
@@ -98,9 +99,22 @@ async function purgeSectionIDs (array) {
         ...constantEntry,
         "body": JSON.stringify({
             "languageCode":"en",
-            "contentIds": array
+            "contentIds": arr
         })
     })
+
+    // Will refactor once extension is ported to an application
+    let initalRequest = await rq(array)
+    try {
+        const requestBody = await initalRequest.json()
+        if (initalRequest.status == 404) {
+            array = array.filter(contentId => requestBody.errorPlaceholder != contentId)
+            initalRequest = await purgeSectionIDs(array)
+        }
+    } catch (e) {
+        console.log(e)
+    }
+    return initalRequest
 }
 
 async function purgeContentIDs (array) {
@@ -122,11 +136,6 @@ async function troll (obj) {
     if (!hasChildren(obj)) {
         if (!blacklist.includes(obj.id)) deleteQueueSection.push(obj.id)
         return
-    }
-
-    if (hasChildren(obj) && (obj.subsections.length == 0)) {
-        console.log("Getting subsections for section " + obj.id)
-        obj = await getSectionInfo(obj.id)
     }
 
     // If section has content entries, add them to the delete queue.
@@ -169,11 +178,11 @@ function canDelete (obj, type) {
     switch (type) {
         // Section type
         case 0: {
-            return obj["mirror-type"] == "none"
+            return !deleteQueueSection.includes(obj.id) && obj["mirror-type"] == "none"
         }
         // Content type
         case 1: {
-            return Object.keys(obj.content.mirroredSectionPaths).length === 0
+            return !deleteQueueContent.includes(obj.id) && Object.keys(obj.content.mirroredSectionPaths).length === 0
         }
         // Default case
         default: {
