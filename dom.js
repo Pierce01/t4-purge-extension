@@ -1,3 +1,5 @@
+const apiUrlBase = 'https://cms.seattleu.edu/terminalfour'
+
 const constantHeaders = {
     "accept": "application/json, text/javascript, */*; q=0.01",
     "accept-language": "en-US,en;q=0.9",
@@ -14,7 +16,7 @@ const constantEntry = {
     "method": "POST",
     "mode": "cors",
     "credentials": "include",
-    "referrer": "https://cms.seattleu.edu/terminalfour/page/recycleContent",
+    "referrer": `${apiUrlBase}/page/recycleContent`,
     "referrerPolicy": "strict-origin-when-cross-origin",
     "body": null
 }
@@ -62,13 +64,13 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
 
 // Gets the specific section's information, including their subsections if that wasn't populated.
 async function getSectionInfo(id) {
-    return (await (await fetch("https://cms.seattleu.edu/terminalfour/rs/hierarchy/section", {
+    return (await (await fetch(`${apiUrlBase}/rs/hierarchy/section`, {
         "headers": {
           "authorization": `Bearer ${JSON.parse(window.sessionStorage.__oauth2).accessToken}`,
           ...constantHeaders
         },
         ...constantEntry,
-        "referrer": "https://cms.seattleu.edu/terminalfour/page/site-structure",
+        "referrer": `${apiUrlBase}/page/site-structure`,
         "body": JSON.stringify({
             "read": {
                 "section": {
@@ -91,7 +93,7 @@ async function getSectionInfo(id) {
 
 async function purgeSectionIDs (array) {
     array = array.map(String)
-    const rq = async (arr) => await fetch("https://cms.seattleu.edu/terminalfour/rs/hierarchy/purge", {
+    const rq = async (arr) => await fetch(`${apiUrlBase}/rs/hierarchy/purge`, {
         "headers": {
             "authorization": `Bearer ${JSON.parse(window.sessionStorage.__oauth2).accessToken}`,
             ...constantHeaders
@@ -118,7 +120,7 @@ async function purgeSectionIDs (array) {
 }
 
 async function purgeContentIDs (array) {
-    return await fetch("https://cms.seattleu.edu/terminalfour/rs/content/purge", {
+    return await fetch(`${apiUrlBase}/rs/content/purge`, {
         "headers": {
             "authorization": `Bearer ${JSON.parse(window.sessionStorage.__oauth2).accessToken}`,
             ...constantHeaders
@@ -164,7 +166,7 @@ async function troll (obj) {
 }
 
 async function getContentIDsFromSection (id) {
-    return (await (await fetch(`https://cms.seattleu.edu/terminalfour/rs/hierarchy/${id}/en/contents?showAll=true&removeNonTranslated=false`, {
+    return (await (await fetch(`${apiUrlBase}/rs/hierarchy/${id}/en/contents?showAll=true&removeNonTranslated=false`, {
         "headers": {
             "authorization": `Bearer ${JSON.parse(window.sessionStorage.__oauth2).accessToken}`,
             ...constantHeaders
@@ -196,7 +198,7 @@ function hasChildren (obj) {
 }
 
 async function getPermission () {
-    return ((await (await fetch("https://cms.seattleu.edu/terminalfour/rs/profile", {
+    return ((await (await fetch(`${apiUrlBase}/rs/profile`, {
         "headers": {
             "authorization": `Bearer ${JSON.parse(window.sessionStorage.__oauth2).accessToken}`,
             ...constantHeaders
