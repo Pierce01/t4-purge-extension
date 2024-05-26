@@ -1,7 +1,7 @@
 {
   "name": "Purge Assistant",
   "description": "Purge assistant is an extension that is able to delete entire sections, along with their content, in a single click.",
-  "version": "1.0",
+  "version": "1.1",
   "manifest_version": 3,
   "permissions": [
     "storage",
